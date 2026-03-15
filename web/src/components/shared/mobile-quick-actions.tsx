@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from "@/lib/router";
 import { MessageCircleMore, Phone } from "lucide-react";
 import { useSiteSettings } from "@/hooks/use-site-settings";
 

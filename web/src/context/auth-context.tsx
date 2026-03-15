@@ -33,7 +33,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
-    Promise.all([bootstrapCsrfToken(), refreshUser()]).finally(() => setLoading(false));
+    Promise.all([bootstrapCsrfToken(), refreshUser()])
+      .catch(() => undefined)
+      .finally(() => setLoading(false));
   }, []);
 
   const value = useMemo<AuthContextValue>(

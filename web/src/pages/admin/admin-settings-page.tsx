@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -76,7 +77,12 @@ export function AdminSettingsPage() {
       queryClient.invalidateQueries({ queryKey: ["homepage"] });
       queryClient.invalidateQueries({ queryKey: ["admin-settings"] });
     },
-    onError: () => toast.error("Failed to update settings"),
+    onError: (error) => {
+      const axiosError = error as AxiosError<{ message?: string; errors?: Array<{ message?: string }> }>;
+      const serverMessage =
+        axiosError.response?.data?.message || axiosError.response?.data?.errors?.[0]?.message || "Failed to update settings";
+      toast.error(serverMessage);
+    },
   });
 
   const onSubmit = form.handleSubmit((values) => mutation.mutate(values));

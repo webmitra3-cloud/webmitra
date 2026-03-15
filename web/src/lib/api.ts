@@ -23,9 +23,10 @@ import {
 
 type RetryConfig = InternalAxiosRequestConfig & { _retry?: boolean; _csrfRetry?: boolean };
 
-const apiBaseUrl = import.meta.env.VITE_API_URL
-  ? `${import.meta.env.VITE_API_URL.replace(/\/+$/, "")}/api`
-  : "/api";
+const configuredApiOrigin = (process.env.NEXT_PUBLIC_API_URL || "")
+  .replace(/\/+$/, "")
+  .replace(/\/api$/i, "");
+const apiBaseUrl = configuredApiOrigin ? `${configuredApiOrigin}/api` : "/api";
 
 export const api = axios.create({
   baseURL: apiBaseUrl,
@@ -43,6 +44,32 @@ function flushQueue(token: string | null) {
 
 function isWriteMethod(method?: string) {
   return ["post", "put", "patch", "delete"].includes((method || "").toLowerCase());
+}
+
+function normalizeUrlPath(url?: string) {
+  if (!url) return "";
+
+  if (/^https?:\/\//i.test(url)) {
+    try {
+      return new URL(url).pathname.toLowerCase();
+    } catch {
+      return "";
+    }
+  }
+
+  return `/${url.replace(/^\/+/, "")}`.toLowerCase();
+}
+
+function shouldRequireCsrfToken(url?: string) {
+  const path = normalizeUrlPath(url);
+  if (!path) return false;
+
+  return (
+    path.startsWith("/admin/") ||
+    path.startsWith("/api/admin/") ||
+    path === "/auth/logout" ||
+    path === "/api/auth/logout"
+  );
 }
 
 async function requestCsrfToken(): Promise<string | null> {
@@ -75,12 +102,13 @@ api.interceptors.request.use(async (config) => {
   const accessToken = getAccessToken();
   const isWrite = isWriteMethod(config.method);
   const isCsrfRoute = config.url?.includes("/auth/csrf");
+  const requiresCsrfToken = isWrite && shouldRequireCsrfToken(config.url);
 
   if (accessToken) {
     config.headers.Authorization = `Bearer ${accessToken}`;
   }
 
-  if (isWrite && !isCsrfRoute) {
+  if (requiresCsrfToken && !isCsrfRoute) {
     const csrfToken = (await ensureCsrfToken()) || getCsrfToken();
     if (csrfToken) {
       config.headers["X-CSRF-Token"] = csrfToken;
@@ -117,8 +145,9 @@ api.interceptors.response.use(
         ? String((error.response.data as { message?: unknown }).message || "")
         : "";
     const isCsrfError = statusCode === 403 && /csrf/i.test(responseMessage);
+    const requiresCsrfToken = shouldRequireCsrfToken(originalConfig.url);
 
-    if (isCsrfError && !originalConfig._csrfRetry && !originalConfig.url?.includes("/auth/csrf")) {
+    if (isCsrfError && requiresCsrfToken && !originalConfig._csrfRetry && !originalConfig.url?.includes("/auth/csrf")) {
       originalConfig._csrfRetry = true;
       const newCsrfToken = await getCsrfTokenFromServer().catch(() => null);
       if (newCsrfToken) {

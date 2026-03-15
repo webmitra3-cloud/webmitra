@@ -1,7 +1,7 @@
 import { ArrowUpRight, CheckCircle2, Clock3, Mail, MapPin, Phone, type LucideIcon } from "lucide-react";
 import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTiktok, FaWhatsapp } from "react-icons/fa6";
 import type { IconType } from "react-icons";
-import { Link } from "react-router-dom";
+import { Link } from "@/lib/router";
 import { buttonVariants } from "@/components/ui/button";
 import { useSiteSettings } from "@/hooks/use-site-settings";
 import { getLogoDisplayUrl } from "@/lib/media";

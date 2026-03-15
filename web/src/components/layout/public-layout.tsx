@@ -1,11 +1,12 @@
-import { Outlet, useLocation } from "react-router-dom";
+import type { ReactNode } from "react";
+import { useLocation } from "@/lib/router";
 import { BackToTop } from "@/components/shared/back-to-top";
 import { MobileQuickActions } from "@/components/shared/mobile-quick-actions";
 import { ScrollProgress } from "@/components/shared/scroll-progress";
 import { PublicFooter } from "./public-footer";
 import { PublicHeader } from "./public-header";
 
-export function PublicLayout() {
+export function PublicLayout({ children }: { children: ReactNode }) {
   const location = useLocation();
 
   return (
@@ -13,7 +14,7 @@ export function PublicLayout() {
       <ScrollProgress />
       <PublicHeader />
       <main key={location.pathname} className="page-enter bg-grid-soft pb-24 md:pb-16">
-        <Outlet />
+        {children}
       </main>
       <PublicFooter />
       <MobileQuickActions />

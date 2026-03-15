@@ -15,8 +15,9 @@ import {
   X,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import type { ReactNode } from "react";
 import { useMemo, useState } from "react";
-import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation } from "@/lib/router";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { useSiteSettings } from "@/hooks/use-site-settings";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -51,7 +52,7 @@ function useAdminNavItems(isAdmin: boolean) {
   }, [isAdmin]);
 }
 
-export function AdminLayout() {
+export function AdminLayout({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const location = useLocation();
   const { user, logout } = useAuth();
@@ -153,9 +154,7 @@ export function AdminLayout() {
 
       <div className="container grid gap-6 py-6 lg:grid-cols-[280px_minmax(0,1fr)]">
         <aside className="surface hidden h-fit p-4 lg:sticky lg:top-[88px] lg:block">{navContent}</aside>
-        <section className="admin-content min-w-0 space-y-5">
-          <Outlet />
-        </section>
+        <section className="admin-content min-w-0 space-y-5">{children}</section>
       </div>
 
       {open ? (

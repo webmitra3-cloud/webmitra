@@ -13,6 +13,7 @@ const STORAGE_KEY = "wm_theme";
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
 function getInitialTheme(): Theme {
+  if (typeof window === "undefined") return "light";
   const stored = localStorage.getItem(STORAGE_KEY);
   if (stored === "light" || stored === "dark") return stored;
   const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -26,16 +27,17 @@ function applyThemeClass(theme: Theme) {
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>(() => getInitialTheme());
+  const [theme, setThemeState] = useState<Theme>("light");
 
   useEffect(() => {
+    setThemeState(getInitialTheme());
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
     applyThemeClass(theme);
     localStorage.setItem(STORAGE_KEY, theme);
   }, [theme]);
-
-  useEffect(() => {
-    applyThemeClass(theme);
-  }, []);
 
   const value = useMemo<ThemeContextValue>(
     () => ({

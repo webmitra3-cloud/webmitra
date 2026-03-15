@@ -1,0 +1,72 @@
+import { Request, Response } from "express";
+import { INQUIRY_STATUS } from "../constants";
+import { FailedAttemptModel, InquiryModel } from "../models";
+import { sendInquiryNotification } from "../services/email.service";
+import { asyncHandler } from "../utils/asyncHandler";
+import { logger } from "../utils/logger";
+
+type ContactPayload = {
+  name: string;
+  email: string;
+  phone?: string;
+  subject?: string;
+  message: string;
+  company?: string;
+};
+
+function sanitizeText(value?: string) {
+  return (value || "").trim();
+}
+
+function sanitizePhone(value?: string) {
+  return sanitizeText(value).replace(/[^\d+\-()\s]/g, "");
+}
+
+export const submitContact = asyncHandler(async (req: Request, res: Response) => {
+  const body = req.body as ContactPayload;
+  const company = sanitizeText(body.company);
+
+  if (company) {
+    await FailedAttemptModel.create({
+      type: "CONTACT",
+      ip: req.ip,
+      userAgent: req.headers["user-agent"],
+      reason: "Honeypot triggered",
+    }).catch(() => undefined);
+
+    return res.status(200).json({
+      ok: true,
+      message: "Inquiry submitted successfully.",
+    });
+  }
+
+  const normalizedPayload = {
+    name: sanitizeText(body.name),
+    email: sanitizeText(body.email).toLowerCase(),
+    phone: sanitizePhone(body.phone),
+    subject: sanitizeText(body.subject),
+    message: sanitizeText(body.message),
+  };
+
+  const inquiry = await InquiryModel.create({
+    ...normalizedPayload,
+    status: INQUIRY_STATUS.NEW,
+    ip: req.ip,
+    userAgent: req.headers["user-agent"] || "",
+  });
+
+  res.status(201).json({
+    ok: true,
+    message: "Inquiry submitted successfully.",
+    data: {
+      inquiryId: inquiry.id,
+    },
+  });
+
+  // Do not block API response on external email provider latency.
+  setImmediate(() => {
+    void sendInquiryNotification(normalizedPayload).catch((error) => {
+      logger.error("Inquiry email dispatch failed", error instanceof Error ? error.message : String(error));
+    });
+  });
+});

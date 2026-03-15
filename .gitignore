@@ -1,6 +1,7 @@
 ﻿node_modules
 dist
 build
+.next
 coverage
 .env
 .env.local
@@ -8,4 +9,5 @@ coverage
 *.log
 *.tsbuildinfo
 .DS_Store
-server/uploads
+web/public/uploads/*
+!web/public/uploads/.gitkeep

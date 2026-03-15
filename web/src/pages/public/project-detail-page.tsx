@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { ExternalLink } from "lucide-react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams } from "@/lib/router";
 import { useSiteSettings } from "@/hooks/use-site-settings";
 import { LoadingState } from "@/components/shared/loading";
 import { Seo } from "@/components/shared/seo";
@@ -10,7 +10,7 @@ import { publicApi } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
 export function ProjectDetailPage() {
-  const { slug } = useParams();
+  const { slug } = useParams<{ slug?: string }>();
   const { data: settings } = useSiteSettings();
 
   const { data, isLoading } = useQuery({

@@ -3,7 +3,7 @@ import { LockKeyhole, ShieldCheck, Sparkles } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "@/lib/router";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { useAuth } from "@/context/auth-context";
 import { Button } from "@/components/ui/button";
@@ -22,7 +22,7 @@ export function AdminLoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const from = (location.state as { from?: { pathname?: string } } | null)?.from?.pathname || "/admin";
+  const from = new URLSearchParams(location.search).get("redirect") || "/admin";
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -33,7 +33,7 @@ export function AdminLoginPage() {
     try {
       await login(values.email, values.password);
       toast.success("Login successful");
-      navigate(from, { replace: true });
+      void navigate(from, { replace: true });
     } catch {
       toast.error("Invalid email or password");
     }

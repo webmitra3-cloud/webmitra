@@ -5,7 +5,7 @@ export function normalizeApiOrigin(url?: string): string {
   return value.replace(/\/+$/, "").replace(/\/api$/i, "");
 }
 
-const configuredOrigin = normalizeApiOrigin(import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || "");
+const configuredOrigin = normalizeApiOrigin(process.env.NEXT_PUBLIC_API_URL || "");
 const fallbackOrigin = typeof window !== "undefined" ? normalizeApiOrigin(window.location.origin) : "";
 const normalizedOrigin = configuredOrigin || fallbackOrigin;
 export const API_BASE_URL = normalizedOrigin ? `${normalizedOrigin}/api` : "/api";
@@ -33,7 +33,7 @@ export const defaultSettings: SiteSettings = {
     facebook: "",
     instagram: "",
     tiktok: "",
-    whatsapp: import.meta.env.VITE_WHATSAPP_NUMBER || "9779869672736",
+    whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "9779869672736",
     email: "webmitra3@gmail.com",
     linkedin: "",
   },

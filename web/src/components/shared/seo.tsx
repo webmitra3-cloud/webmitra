@@ -1,4 +1,4 @@
-import { Helmet } from "react-helmet-async";
+import Head from "next/head";
 import { SiteSettings } from "@/types";
 import { defaultSettings } from "@/lib/constants";
 
@@ -31,7 +31,7 @@ export function Seo({ title, description, path = "/", keywords = [], image, cano
   };
 
   return (
-    <Helmet>
+    <Head>
       <title>{pageTitle}</title>
       <meta name="description" content={pageDescription} />
       {seoKeywords.length > 0 ? <meta name="keywords" content={seoKeywords.join(", ")} /> : null}
@@ -46,6 +46,6 @@ export function Seo({ title, description, path = "/", keywords = [], image, cano
       <meta name="twitter:description" content={pageDescription} />
       <meta name="twitter:image" content={ogImage} />
       <script type="application/ld+json">{JSON.stringify(structuredData)}</script>
-    </Helmet>
+    </Head>
   );
 }

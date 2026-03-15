@@ -1,6 +1,6 @@
 import { BriefcaseBusiness, Menu, PhoneCall, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation } from "@/lib/router";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { buttonVariants } from "@/components/ui/button";
 import { useSiteSettings } from "@/hooks/use-site-settings";
