@@ -1,4 +1,4 @@
-import { InferSchemaType, Model, Schema, model } from "mongoose";
+import { InferSchemaType, Model, Schema, model, models } from "mongoose";
 import { INQUIRY_STATUS } from "../constants";
 
 const inquirySchema = new Schema(
@@ -19,4 +19,5 @@ inquirySchema.index({ status: 1, createdAt: -1 });
 inquirySchema.index({ createdAt: -1 });
 
 export type InquiryDocument = InferSchemaType<typeof inquirySchema>;
-export const InquiryModel: Model<InquiryDocument> = model<InquiryDocument>("Inquiry", inquirySchema);
+export const InquiryModel: Model<InquiryDocument> =
+  (models.Inquiry as Model<InquiryDocument>) || model<InquiryDocument>("Inquiry", inquirySchema);

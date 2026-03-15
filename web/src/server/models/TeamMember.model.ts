@@ -1,4 +1,4 @@
-import { InferSchemaType, Model, Schema, model } from "mongoose";
+import { InferSchemaType, Model, Schema, model, models } from "mongoose";
 import { TEAM_TYPES } from "../constants";
 
 const socialsSchema = new Schema(
@@ -27,4 +27,5 @@ const teamMemberSchema = new Schema(
 teamMemberSchema.index({ type: 1, order: 1, createdAt: -1 });
 
 export type TeamMemberDocument = InferSchemaType<typeof teamMemberSchema>;
-export const TeamMemberModel: Model<TeamMemberDocument> = model<TeamMemberDocument>("TeamMember", teamMemberSchema);
+export const TeamMemberModel: Model<TeamMemberDocument> =
+  (models.TeamMember as Model<TeamMemberDocument>) || model<TeamMemberDocument>("TeamMember", teamMemberSchema);

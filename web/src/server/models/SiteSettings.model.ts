@@ -1,4 +1,4 @@
-import { InferSchemaType, Model, Schema, model } from "mongoose";
+import { InferSchemaType, Model, Schema, model, models } from "mongoose";
 
 const socialSchema = new Schema(
   {
@@ -86,7 +86,5 @@ const siteSettingsSchema = new Schema(
 siteSettingsSchema.index({ createdAt: 1 });
 
 export type SiteSettingsDocument = InferSchemaType<typeof siteSettingsSchema>;
-export const SiteSettingsModel: Model<SiteSettingsDocument> = model<SiteSettingsDocument>(
-  "SiteSettings",
-  siteSettingsSchema,
-);
+export const SiteSettingsModel: Model<SiteSettingsDocument> =
+  (models.SiteSettings as Model<SiteSettingsDocument>) || model<SiteSettingsDocument>("SiteSettings", siteSettingsSchema);

@@ -3,6 +3,12 @@ import { z } from "zod";
 
 dotenv.config();
 
+const optionalTrimmedString = z.preprocess((value) => {
+  if (typeof value !== "string") return value;
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : undefined;
+}, z.string().optional());
+
 const envSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]),
   PORT: z.coerce.number().default(3000),
@@ -10,7 +16,7 @@ const envSchema = z.object({
   // Supports one or more origins separated by comma.
   // Example: https://webmitra-tech-web.vercel.app,https://webmitra-tech-web-git-main-*.vercel.app
   CLIENT_ORIGIN: z.string().min(1),
-  COOKIE_DOMAIN: z.string().optional(),
+  COOKIE_DOMAIN: optionalTrimmedString,
   JWT_ACCESS_SECRET: z.string().min(16),
   JWT_REFRESH_SECRET: z.string().min(16),
   JWT_ACCESS_EXPIRES_IN: z.string().default("15m"),
@@ -33,9 +39,9 @@ const envSchema = z.object({
     .optional()
     .default("true")
     .transform((value) => value.toLowerCase() === "true"),
-  CLOUDINARY_CLOUD_NAME: z.string().optional().default(""),
-  CLOUDINARY_API_KEY: z.string().optional().default(""),
-  CLOUDINARY_API_SECRET: z.string().optional().default(""),
+  CLOUDINARY_CLOUD_NAME: optionalTrimmedString.default(""),
+  CLOUDINARY_API_KEY: optionalTrimmedString.default(""),
+  CLOUDINARY_API_SECRET: optionalTrimmedString.default(""),
   WHATSAPP_NUMBER: z.string().default("9779869672736"),
 });
 

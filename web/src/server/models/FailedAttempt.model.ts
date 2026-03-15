@@ -1,4 +1,4 @@
-import { InferSchemaType, Model, Schema, model } from "mongoose";
+import { InferSchemaType, Model, Schema, model, models } from "mongoose";
 import { FAILED_ATTEMPT_TYPE } from "../constants";
 
 const failedAttemptSchema = new Schema(
@@ -17,7 +17,5 @@ const failedAttemptSchema = new Schema(
 );
 
 export type FailedAttemptDocument = InferSchemaType<typeof failedAttemptSchema>;
-export const FailedAttemptModel: Model<FailedAttemptDocument> = model<FailedAttemptDocument>(
-  "FailedAttempt",
-  failedAttemptSchema,
-);
+export const FailedAttemptModel: Model<FailedAttemptDocument> =
+  (models.FailedAttempt as Model<FailedAttemptDocument>) || model<FailedAttemptDocument>("FailedAttempt", failedAttemptSchema);

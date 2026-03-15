@@ -1,4 +1,4 @@
-import { InferSchemaType, Model, Schema, model } from "mongoose";
+import { InferSchemaType, Model, Schema, model, models } from "mongoose";
 
 const collaborationSchema = new Schema(
   {
@@ -14,7 +14,5 @@ const collaborationSchema = new Schema(
 collaborationSchema.index({ order: 1, createdAt: -1 });
 
 export type CollaborationDocument = InferSchemaType<typeof collaborationSchema>;
-export const CollaborationModel: Model<CollaborationDocument> = model<CollaborationDocument>(
-  "Collaboration",
-  collaborationSchema,
-);
+export const CollaborationModel: Model<CollaborationDocument> =
+  (models.Collaboration as Model<CollaborationDocument>) || model<CollaborationDocument>("Collaboration", collaborationSchema);

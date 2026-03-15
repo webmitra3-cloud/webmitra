@@ -1,4 +1,4 @@
-import { InferSchemaType, Model, Schema, model } from "mongoose";
+import { InferSchemaType, Model, Schema, model, models } from "mongoose";
 
 const seoSchema = new Schema(
   {
@@ -27,4 +27,5 @@ const serviceSchema = new Schema(
 serviceSchema.index({ order: 1, createdAt: -1 });
 
 export type ServiceDocument = InferSchemaType<typeof serviceSchema>;
-export const ServiceModel: Model<ServiceDocument> = model<ServiceDocument>("Service", serviceSchema);
+export const ServiceModel: Model<ServiceDocument> =
+  (models.Service as Model<ServiceDocument>) || model<ServiceDocument>("Service", serviceSchema);

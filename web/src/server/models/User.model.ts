@@ -1,4 +1,4 @@
-import { InferSchemaType, Model, Schema, model } from "mongoose";
+import { InferSchemaType, Model, Schema, model, models } from "mongoose";
 import { ROLES } from "../constants";
 
 const userSchema = new Schema(
@@ -28,4 +28,4 @@ userSchema.set("toJSON", {
 });
 
 export type UserDocument = InferSchemaType<typeof userSchema>;
-export const UserModel: Model<UserDocument> = model<UserDocument>("User", userSchema);
+export const UserModel: Model<UserDocument> = (models.User as Model<UserDocument>) || model<UserDocument>("User", userSchema);

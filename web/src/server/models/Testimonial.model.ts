@@ -1,4 +1,4 @@
-import { InferSchemaType, Model, Schema, model } from "mongoose";
+import { InferSchemaType, Model, Schema, model, models } from "mongoose";
 
 const seoSchema = new Schema(
   {
@@ -28,4 +28,5 @@ testimonialSchema.index({ visible: 1, order: 1, createdAt: -1 });
 testimonialSchema.index({ order: 1, createdAt: -1 });
 
 export type TestimonialDocument = InferSchemaType<typeof testimonialSchema>;
-export const TestimonialModel: Model<TestimonialDocument> = model<TestimonialDocument>("Testimonial", testimonialSchema);
+export const TestimonialModel: Model<TestimonialDocument> =
+  (models.Testimonial as Model<TestimonialDocument>) || model<TestimonialDocument>("Testimonial", testimonialSchema);

@@ -1,4 +1,4 @@
-import { InferSchemaType, Model, Schema, model } from "mongoose";
+import { InferSchemaType, Model, Schema, model, models } from "mongoose";
 import { PRICING_PLAN_NAMES } from "../constants";
 
 const pricingPlanSchema = new Schema(
@@ -25,4 +25,5 @@ const pricingPlanSchema = new Schema(
 pricingPlanSchema.index({ order: 1, createdAt: -1 });
 
 export type PricingPlanDocument = InferSchemaType<typeof pricingPlanSchema>;
-export const PricingPlanModel: Model<PricingPlanDocument> = model<PricingPlanDocument>("PricingPlan", pricingPlanSchema);
+export const PricingPlanModel: Model<PricingPlanDocument> =
+  (models.PricingPlan as Model<PricingPlanDocument>) || model<PricingPlanDocument>("PricingPlan", pricingPlanSchema);
