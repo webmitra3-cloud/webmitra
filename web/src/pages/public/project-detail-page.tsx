@@ -8,15 +8,26 @@ import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { publicApi } from "@/lib/api";
 import { cn } from "@/lib/utils";
+import { Project, SiteSettings } from "@/types";
 
-export function ProjectDetailPage() {
+export function ProjectDetailPage({
+  initialSettings,
+  initialProject,
+  initialSlug,
+}: {
+  initialSettings?: SiteSettings | null;
+  initialProject?: Project | null;
+  initialSlug?: string;
+}) {
   const { slug } = useParams<{ slug?: string }>();
-  const { data: settings } = useSiteSettings();
+  const activeSlug = slug || initialSlug || "";
+  const { data: settings } = useSiteSettings(initialSettings);
 
   const { data, isLoading } = useQuery({
-    queryKey: ["project", slug],
-    queryFn: () => publicApi.getProjectBySlug(slug || ""),
-    enabled: Boolean(slug),
+    queryKey: ["project", activeSlug],
+    queryFn: () => publicApi.getProjectBySlug(activeSlug),
+    enabled: Boolean(activeSlug),
+    initialData: initialProject ?? undefined,
   });
 
   if (isLoading || !data) {

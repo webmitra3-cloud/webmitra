@@ -13,6 +13,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useSiteSettings } from "@/hooks/use-site-settings";
 import { publicApi } from "@/lib/api";
 import { cn } from "@/lib/utils";
+import { Service, SiteSettings } from "@/types";
 
 const serviceSignals = [
   { icon: ShieldCheck, text: "Security-focused implementation" },
@@ -38,9 +39,19 @@ const deliveryModes = [
   },
 ];
 
-export function ServicesPage() {
-  const { data: settings } = useSiteSettings();
-  const { data, isLoading } = useQuery({ queryKey: ["services"], queryFn: publicApi.getServices });
+export function ServicesPage({
+  initialSettings,
+  initialServices,
+}: {
+  initialSettings?: SiteSettings | null;
+  initialServices?: Service[];
+}) {
+  const { data: settings } = useSiteSettings(initialSettings);
+  const { data, isLoading } = useQuery({
+    queryKey: ["services"],
+    queryFn: publicApi.getServices,
+    initialData: initialServices,
+  });
   const pageSeo = data?.find(
     (item) =>
       Boolean(item.seo?.metaTitle) ||

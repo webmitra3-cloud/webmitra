@@ -28,6 +28,11 @@ export const api = axios.create({
   withCredentials: true,
 });
 
+const publicApiClient = axios.create({
+  baseURL: "/api",
+  withCredentials: false,
+});
+
 let isRefreshing = false;
 let pendingQueue: Array<(token: string | null) => void> = [];
 let pendingCsrfPromise: Promise<string | null> | null = null;
@@ -215,25 +220,26 @@ export async function meRequest() {
 }
 
 export const publicApi = {
-  getHomepage: async () => (await api.get<HomepageData>("/public/homepage")).data,
-  getSettings: async () => (await api.get<SiteSettings | null>("/public/settings")).data,
-  getServices: async () => (await api.get<Service[]>("/public/services")).data,
+  getHomepage: async () => (await publicApiClient.get<HomepageData>("/public/homepage")).data,
+  getSettings: async () => (await publicApiClient.get<SiteSettings | null>("/public/settings")).data,
+  getServices: async () => (await publicApiClient.get<Service[]>("/public/services")).data,
   getProjects: async (params?: Record<string, string | number | boolean>) =>
-    (await api.get<PaginatedResponse<Project>>("/public/projects", { params })).data,
-  getProjectBySlug: async (slug: string) => (await api.get<Project>(`/public/projects/${slug}`)).data,
-  getTeam: async (type?: "TEAM" | "BOARD") => (await api.get<TeamMember[]>("/public/team", { params: { type } })).data,
-  getCollaborations: async () => (await api.get<Collaboration[]>("/public/collaborations")).data,
-  getPricing: async () => (await api.get<PricingPlan[]>("/public/pricing")).data,
-  getTestimonials: async () => (await api.get<Testimonial[]>("/public/testimonials")).data,
+    (await publicApiClient.get<PaginatedResponse<Project>>("/public/projects", { params })).data,
+  getProjectBySlug: async (slug: string) => (await publicApiClient.get<Project>(`/public/projects/${slug}`)).data,
+  getTeam: async (type?: "TEAM" | "BOARD") =>
+    (await publicApiClient.get<TeamMember[]>("/public/team", { params: { type } })).data,
+  getCollaborations: async () => (await publicApiClient.get<Collaboration[]>("/public/collaborations")).data,
+  getPricing: async () => (await publicApiClient.get<PricingPlan[]>("/public/pricing")).data,
+  getTestimonials: async () => (await publicApiClient.get<Testimonial[]>("/public/testimonials")).data,
   submitTestimonial: async (payload: {
     name: string;
     roleCompany?: string;
     message: string;
     rating?: number;
     honeypot?: string;
-  }) => (await api.post<{ message: string }>("/public/testimonials", payload)).data,
+  }) => (await publicApiClient.post<{ message: string }>("/public/testimonials", payload)).data,
   submitInquiry: async (payload: Record<string, string>) =>
-    (await api.post<{ message: string }>("/contact", payload)).data,
+    (await publicApiClient.post<{ message: string }>("/contact", payload)).data,
 };
 
 export const adminApi = {

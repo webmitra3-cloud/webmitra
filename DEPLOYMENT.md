@@ -58,6 +58,9 @@ Set these in Project Settings -> Environment Variables:
 - `WHATSAPP_NUMBER=9779869672736`
 - `NEXT_PUBLIC_WHATSAPP_NUMBER=9779869672736`
 
+Recommended for faster cold starts after first seed:
+- `SEED_DUMMY_ON_STARTUP=false`
+
 ## 4. Domain + SSL
 
 1. Add your custom domain in Vercel.
@@ -77,6 +80,7 @@ Validate:
 ## 6. Best Practices
 
 - Use same-origin API calls (`/api/*`) for lowest latency and no CORS complexity.
+- Keep `SEED_DUMMY_ON_STARTUP=false` after initial content is seeded.
 - Keep all secrets only in Vercel environment variables.
 - Rotate JWT secrets periodically.
 - Restrict MongoDB Atlas network access.

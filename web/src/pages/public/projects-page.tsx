@@ -14,9 +14,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { useSiteSettings } from "@/hooks/use-site-settings";
 import { publicApi } from "@/lib/api";
+import { PaginatedResponse, Project, SiteSettings } from "@/types";
 
-export function ProjectsPage() {
-  const { data: settings } = useSiteSettings();
+export function ProjectsPage({
+  initialSettings,
+  initialProjects,
+}: {
+  initialSettings?: SiteSettings | null;
+  initialProjects?: PaginatedResponse<Project>;
+}) {
+  const { data: settings } = useSiteSettings(initialSettings);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const page = Number(searchParams.get("page") || "1");
@@ -36,6 +43,7 @@ export function ProjectsPage() {
   const { data, isLoading } = useQuery({
     queryKey: ["projects", queryParams],
     queryFn: () => publicApi.getProjects(queryParams),
+    initialData: !search && !tag && page === 1 ? initialProjects : undefined,
   });
 
   const pageSeo = data?.items.find(

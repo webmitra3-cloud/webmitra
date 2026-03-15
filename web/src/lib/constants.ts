@@ -60,6 +60,36 @@ export const defaultSettings: SiteSettings = {
   homepageBannerUrl: "",
 };
 
+export function mergeSiteSettings(data?: SiteSettings | null): SiteSettings {
+  return {
+    ...defaultSettings,
+    ...(data || {}),
+    stats: {
+      ...defaultSettings.stats,
+      ...(data?.stats || {}),
+    },
+    contact: {
+      ...defaultSettings.contact,
+      ...(data?.contact || {}),
+    },
+    socials: {
+      ...defaultSettings.socials,
+      ...(data?.socials || {}),
+    },
+    header: {
+      ...defaultSettings.header,
+      ...(data?.header || {}),
+      badges: data?.header?.badges || defaultSettings.header.badges,
+    },
+    footer: {
+      ...defaultSettings.footer,
+      ...(data?.footer || {}),
+      capabilities: data?.footer?.capabilities || defaultSettings.footer.capabilities,
+    },
+    values: data?.values || defaultSettings.values,
+  };
+}
+
 export const publicNavItems = [
   { to: "/", label: "Home" },
   { to: "/services", label: "Services" },

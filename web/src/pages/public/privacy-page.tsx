@@ -2,9 +2,10 @@ import { PageHero } from "@/components/shared/page-hero";
 import { Seo } from "@/components/shared/seo";
 import { Card, CardContent } from "@/components/ui/card";
 import { useSiteSettings } from "@/hooks/use-site-settings";
+import { SiteSettings } from "@/types";
 
-export function PrivacyPage() {
-  const { data: settings } = useSiteSettings();
+export function PrivacyPage({ initialSettings }: { initialSettings?: SiteSettings | null }) {
+  const { data: settings } = useSiteSettings(initialSettings);
   return (
     <>
       <Seo title="Privacy Policy" description="Privacy policy for WebMitra.Tech website." settings={settings} path="/privacy" />

@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useSiteSettings } from "@/hooks/use-site-settings";
 import { publicApi } from "@/lib/api";
 import { cn } from "@/lib/utils";
-import { TeamMember } from "@/types";
+import { SiteSettings, TeamMember } from "@/types";
 
 function getInitials(name: string) {
   return name
@@ -22,10 +22,21 @@ function getInitials(name: string) {
     .join("");
 }
 
-function MemberSection({ title, subtitle, type }: { title: string; subtitle: string; type: "TEAM" | "BOARD" }) {
+function MemberSection({
+  title,
+  subtitle,
+  type,
+  initialData,
+}: {
+  title: string;
+  subtitle: string;
+  type: "TEAM" | "BOARD";
+  initialData?: TeamMember[];
+}) {
   const { data = [], isLoading } = useQuery({
     queryKey: ["members", type],
     queryFn: () => publicApi.getTeam(type),
+    initialData,
   });
 
   return (
@@ -127,8 +138,16 @@ function MemberCard({ member }: { member: TeamMember }) {
   );
 }
 
-export function TeamPage() {
-  const { data: settings } = useSiteSettings();
+export function TeamPage({
+  initialSettings,
+  initialTeam,
+  initialBoard,
+}: {
+  initialSettings?: SiteSettings | null;
+  initialTeam?: TeamMember[];
+  initialBoard?: TeamMember[];
+}) {
+  const { data: settings } = useSiteSettings(initialSettings);
 
   return (
     <>
@@ -157,11 +176,13 @@ export function TeamPage() {
           title="Core Team"
           subtitle="Designers, developers, and strategists delivering project execution."
           type="TEAM"
+          initialData={initialTeam}
         />
         <MemberSection
           title="Board Members"
           subtitle="Leadership support for governance, standards, and scaling direction."
           type="BOARD"
+          initialData={initialBoard}
         />
       </section>
     </>

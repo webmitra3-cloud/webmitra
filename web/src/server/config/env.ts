@@ -33,9 +33,9 @@ const envSchema = z.object({
     .optional()
     .default("true")
     .transform((value) => value.toLowerCase() === "true"),
-  CLOUDINARY_CLOUD_NAME: z.string().min(1),
-  CLOUDINARY_API_KEY: z.string().min(1),
-  CLOUDINARY_API_SECRET: z.string().min(1),
+  CLOUDINARY_CLOUD_NAME: z.string().optional().default(""),
+  CLOUDINARY_API_KEY: z.string().optional().default(""),
+  CLOUDINARY_API_SECRET: z.string().optional().default(""),
   WHATSAPP_NUMBER: z.string().default("9779869672736"),
 });
 

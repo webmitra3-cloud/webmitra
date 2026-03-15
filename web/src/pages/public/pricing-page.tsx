@@ -9,12 +9,20 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { publicApi } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { useSiteSettings } from "@/hooks/use-site-settings";
+import { PricingPlan, SiteSettings } from "@/types";
 
-export function PricingPage() {
-  const { data: settings } = useSiteSettings();
+export function PricingPage({
+  initialSettings,
+  initialPricing,
+}: {
+  initialSettings?: SiteSettings | null;
+  initialPricing?: PricingPlan[];
+}) {
+  const { data: settings } = useSiteSettings(initialSettings);
   const { data } = useQuery({
     queryKey: ["pricing-page"],
     queryFn: publicApi.getPricing,
+    initialData: initialPricing,
   });
 
   return (

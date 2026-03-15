@@ -28,8 +28,9 @@ import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { publicApi } from "@/lib/api";
-import { defaultSettings } from "@/lib/constants";
+import { mergeSiteSettings } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+import { HomepageData } from "@/types";
 
 const executionSteps = [
   {
@@ -79,10 +80,11 @@ const whyPoints = [
   },
 ];
 
-export function HomePage() {
+export function HomePage({ initialData }: { initialData?: HomepageData }) {
   const { data, isLoading } = useQuery({
     queryKey: ["homepage"],
     queryFn: publicApi.getHomepage,
+    initialData,
   });
 
   if (isLoading || !data) {
@@ -95,23 +97,7 @@ export function HomePage() {
   const pricingPlans = Array.isArray(data.pricing) ? data.pricing : [];
   const testimonials = Array.isArray(data.testimonials) ? data.testimonials : [];
 
-  const mergedSettings = {
-    ...defaultSettings,
-    ...(data.settings || {}),
-    stats: {
-      ...defaultSettings.stats,
-      ...(data.settings?.stats || {}),
-    },
-    contact: {
-      ...defaultSettings.contact,
-      ...(data.settings?.contact || {}),
-    },
-    socials: {
-      ...defaultSettings.socials,
-      ...(data.settings?.socials || {}),
-    },
-    values: data.settings?.values || defaultSettings.values,
-  };
+  const mergedSettings = mergeSiteSettings(data.settings);
 
   const featuredServices = services.slice(0, 6);
   const featuredProjects = projects.slice(0, 5);

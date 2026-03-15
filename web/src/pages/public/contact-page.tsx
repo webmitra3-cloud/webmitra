@@ -16,6 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useSiteSettings } from "@/hooks/use-site-settings";
 import { publicApi } from "@/lib/api";
 import { cn } from "@/lib/utils";
+import { SiteSettings } from "@/types";
 
 const contactSchema = z.object({
   name: z.string().min(2, "Name is required"),
@@ -34,8 +35,8 @@ const responseSteps = [
 
 type ContactFormValues = z.infer<typeof contactSchema>;
 
-export function ContactPage() {
-  const { data: settings } = useSiteSettings();
+export function ContactPage({ initialSettings }: { initialSettings?: SiteSettings | null }) {
+  const { data: settings } = useSiteSettings(initialSettings);
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactSchema),
     defaultValues: {

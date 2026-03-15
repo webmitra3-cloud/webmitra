@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useSiteSettings } from "@/hooks/use-site-settings";
 import { publicApi } from "@/lib/api";
 import { cn } from "@/lib/utils";
+import { SiteSettings, TeamMember } from "@/types";
 
 const growthPillars = [
   {
@@ -30,11 +31,18 @@ const growthPillars = [
   },
 ];
 
-export function AboutPage() {
-  const { data: settings } = useSiteSettings();
+export function AboutPage({
+  initialSettings,
+  initialTeam,
+}: {
+  initialSettings?: SiteSettings | null;
+  initialTeam?: TeamMember[];
+}) {
+  const { data: settings } = useSiteSettings(initialSettings);
   const { data: team = [] } = useQuery({
     queryKey: ["team-preview"],
     queryFn: () => publicApi.getTeam("TEAM"),
+    initialData: initialTeam,
   });
 
   return (

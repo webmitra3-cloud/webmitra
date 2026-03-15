@@ -1,37 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
+import { useInitialSiteSettingsContext } from "@/context/site-settings-context";
 import { publicApi } from "@/lib/api";
-import { defaultSettings } from "@/lib/constants";
+import { mergeSiteSettings } from "@/lib/constants";
+import { SiteSettings } from "@/types";
 
-export function useSiteSettings() {
+export function useSiteSettings(initialData?: SiteSettings | null) {
+  const contextInitialData = useInitialSiteSettingsContext();
+  const seededData = initialData !== undefined ? initialData : contextInitialData;
+
   return useQuery({
     queryKey: ["site-settings"],
     queryFn: publicApi.getSettings,
-    select: (data) => ({
-      ...defaultSettings,
-      ...(data || {}),
-      stats: {
-        ...defaultSettings.stats,
-        ...(data?.stats || {}),
-      },
-      contact: {
-        ...defaultSettings.contact,
-        ...(data?.contact || {}),
-      },
-      socials: {
-        ...defaultSettings.socials,
-        ...(data?.socials || {}),
-      },
-      header: {
-        ...defaultSettings.header,
-        ...(data?.header || {}),
-        badges: data?.header?.badges || defaultSettings.header.badges,
-      },
-      footer: {
-        ...defaultSettings.footer,
-        ...(data?.footer || {}),
-        capabilities: data?.footer?.capabilities || defaultSettings.footer.capabilities,
-      },
-      values: data?.values || defaultSettings.values,
-    }),
+    initialData: seededData ?? undefined,
+    select: mergeSiteSettings,
   });
 }
