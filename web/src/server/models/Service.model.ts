@@ -24,5 +24,7 @@ const serviceSchema = new Schema(
   { timestamps: true },
 );
 
+serviceSchema.index({ order: 1, createdAt: -1 });
+
 export type ServiceDocument = InferSchemaType<typeof serviceSchema>;
 export const ServiceModel: Model<ServiceDocument> = model<ServiceDocument>("Service", serviceSchema);

@@ -1,8 +1,4 @@
-import fs from "fs/promises";
-import path from "path";
-import crypto from "crypto";
 import { cloudinary, isCloudinaryConfigured } from "../config/cloudinary";
-import { uploadsDir } from "../config/uploads";
 import { AppError } from "../utils/AppError";
 
 function parseDataUri(dataUri: string) {
@@ -26,20 +22,14 @@ export async function uploadImage(dataUri: string, folder = "webmitra"): Promise
   if (!dataUri) return "";
   const safeFolder = sanitizeFolder(folder);
 
-  if (isCloudinaryConfigured) {
-    const uploaded = await cloudinary.uploader.upload(dataUri, {
-      folder: safeFolder,
-      resource_type: "image",
-    });
-    return uploaded.secure_url;
+  if (!isCloudinaryConfigured) {
+    throw new AppError("Image uploads require Cloudinary credentials in production.", 503);
   }
 
-  const { base64Data, extension } = parseDataUri(dataUri);
-  await fs.mkdir(uploadsDir, { recursive: true });
-  const safeExtension = extension.replace(/[^a-z0-9]/gi, "").toLowerCase() || "png";
-  const fileName = `${safeFolder}-${Date.now()}-${crypto.randomBytes(4).toString("hex")}.${safeExtension}`;
-  const filePath = path.join(uploadsDir, fileName);
-  await fs.writeFile(filePath, base64Data, "base64");
-  // Return relative path so the URL stays valid regardless of host/port.
-  return `/uploads/${fileName}`;
+  parseDataUri(dataUri);
+  const uploaded = await cloudinary.uploader.upload(dataUri, {
+    folder: safeFolder,
+    resource_type: "image",
+  });
+  return uploaded.secure_url;
 }

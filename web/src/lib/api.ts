@@ -23,13 +23,8 @@ import {
 
 type RetryConfig = InternalAxiosRequestConfig & { _retry?: boolean; _csrfRetry?: boolean };
 
-const configuredApiOrigin = (process.env.NEXT_PUBLIC_API_URL || "")
-  .replace(/\/+$/, "")
-  .replace(/\/api$/i, "");
-const apiBaseUrl = configuredApiOrigin ? `${configuredApiOrigin}/api` : "/api";
-
 export const api = axios.create({
-  baseURL: apiBaseUrl,
+  baseURL: "/api",
   withCredentials: true,
 });
 

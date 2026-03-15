@@ -11,6 +11,8 @@ const collaborationSchema = new Schema(
   { timestamps: true },
 );
 
+collaborationSchema.index({ order: 1, createdAt: -1 });
+
 export type CollaborationDocument = InferSchemaType<typeof collaborationSchema>;
 export const CollaborationModel: Model<CollaborationDocument> = model<CollaborationDocument>(
   "Collaboration",

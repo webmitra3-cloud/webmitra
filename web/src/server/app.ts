@@ -4,9 +4,7 @@ import express from "express";
 import mongoSanitize from "express-mongo-sanitize";
 import helmet from "helmet";
 import morgan from "morgan";
-import path from "path";
 import { env } from "./config/env";
-import { uploadsDir } from "./config/uploads";
 import { errorHandler } from "./middlewares/error.middleware";
 import { notFoundHandler } from "./middlewares/notFound.middleware";
 import { sanitizeInput } from "./middlewares/sanitize.middleware";
@@ -73,32 +71,6 @@ function isAllowedVercelPreviewOrigin(origin: string) {
   }
 }
 
-function rewriteLegacyUploadUrl(value: string, origin: string) {
-  const match = value.match(/^https?:\/\/(?:localhost|127\.0\.0\.1):\d+\/uploads\/(.+)$/i);
-  if (!match) return value;
-  return `${origin}/uploads/${match[1]}`;
-}
-
-function normalizeLegacyUploadUrls<T>(value: T, origin: string): T {
-  if (typeof value === "string") {
-    return rewriteLegacyUploadUrl(value, origin) as T;
-  }
-
-  if (Array.isArray(value)) {
-    return value.map((item) => normalizeLegacyUploadUrls(item, origin)) as T;
-  }
-
-  if (value && typeof value === "object" && !(value instanceof Date)) {
-    const normalized: Record<string, unknown> = {};
-    Object.entries(value as Record<string, unknown>).forEach(([key, nestedValue]) => {
-      normalized[key] = normalizeLegacyUploadUrls(nestedValue, origin);
-    });
-    return normalized as T;
-  }
-
-  return value;
-}
-
 const allowedOriginRules = clientOriginEnv
   .split(",")
   .map((origin) => origin.trim())
@@ -146,23 +118,11 @@ app.use(express.urlencoded({ extended: true, limit: "10kb" }));
 app.use(cookieParser());
 app.use(mongoSanitize());
 app.use(sanitizeInput);
-app.use((req, res, next) => {
-  const requestOrigin = `${req.protocol}://${req.get("host")}`;
-  const originalJson = res.json.bind(res);
-
-  res.json = ((body: unknown) => {
-    const normalizedBody = normalizeLegacyUploadUrls(body, requestOrigin);
-    return originalJson(normalizedBody);
-  }) as typeof res.json;
-
-  next();
-});
 
 app.get("/healthz", (_req, res) => {
   res.json({ ok: true });
 });
 
-app.use("/uploads", express.static(path.resolve(uploadsDir)));
 app.use("/api", apiRoutes);
 
 app.use(notFoundHandler);

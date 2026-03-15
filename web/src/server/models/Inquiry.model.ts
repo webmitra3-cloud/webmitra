@@ -15,5 +15,8 @@ const inquirySchema = new Schema(
   { timestamps: true },
 );
 
+inquirySchema.index({ status: 1, createdAt: -1 });
+inquirySchema.index({ createdAt: -1 });
+
 export type InquiryDocument = InferSchemaType<typeof inquirySchema>;
 export const InquiryModel: Model<InquiryDocument> = model<InquiryDocument>("Inquiry", inquirySchema);

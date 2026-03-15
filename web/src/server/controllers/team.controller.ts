@@ -22,7 +22,7 @@ export const listTeamMembers = asyncHandler(async (req: Request, res: Response) 
   if (type) filter.type = type;
 
   const [items, total] = await Promise.all([
-    TeamMemberModel.find(filter).sort(sort).skip(skip).limit(limit),
+    TeamMemberModel.find(filter).sort(sort).skip(skip).limit(limit).lean(),
     TeamMemberModel.countDocuments(filter),
   ]);
 

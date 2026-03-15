@@ -83,6 +83,8 @@ const siteSettingsSchema = new Schema(
   { timestamps: true },
 );
 
+siteSettingsSchema.index({ createdAt: 1 });
+
 export type SiteSettingsDocument = InferSchemaType<typeof siteSettingsSchema>;
 export const SiteSettingsModel: Model<SiteSettingsDocument> = model<SiteSettingsDocument>(
   "SiteSettings",

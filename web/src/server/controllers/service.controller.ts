@@ -18,7 +18,7 @@ export const listServices = asyncHandler(async (req: Request, res: Response) => 
   });
 
   const [items, total] = await Promise.all([
-    ServiceModel.find(filter).sort(sort).skip(skip).limit(limit),
+    ServiceModel.find(filter).sort(sort).skip(skip).limit(limit).lean(),
     ServiceModel.countDocuments(filter),
   ]);
 

@@ -15,6 +15,13 @@ import { createPublicTestimonialSchema } from "../validations/testimonial.valida
 
 const router = Router();
 
+router.use((req, res, next) => {
+  if (req.method === "GET") {
+    res.setHeader("Cache-Control", "public, s-maxage=60, stale-while-revalidate=300");
+  }
+  next();
+});
+
 router.get("/homepage", getHomepageData);
 router.get("/settings", getSiteSettings);
 router.get("/services", getPublicServices);

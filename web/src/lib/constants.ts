@@ -1,15 +1,5 @@
 import { SiteSettings } from "@/types";
 
-export function normalizeApiOrigin(url?: string): string {
-  const value = (url || "").trim();
-  return value.replace(/\/+$/, "").replace(/\/api$/i, "");
-}
-
-const configuredOrigin = normalizeApiOrigin(process.env.NEXT_PUBLIC_API_URL || "");
-const fallbackOrigin = typeof window !== "undefined" ? normalizeApiOrigin(window.location.origin) : "";
-const normalizedOrigin = configuredOrigin || fallbackOrigin;
-export const API_BASE_URL = normalizedOrigin ? `${normalizedOrigin}/api` : "/api";
-
 export const defaultSettings: SiteSettings = {
   companyName: "WebMitra.Tech",
   tagline: "Modern digital services",

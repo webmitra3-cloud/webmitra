@@ -21,7 +21,7 @@ export const getDashboardStats = asyncHandler(async (_req: Request, res: Respons
     TestimonialModel.countDocuments(),
   ]);
 
-  const latestInquiries = await InquiryModel.find().sort({ createdAt: -1 }).limit(5);
+  const latestInquiries = await InquiryModel.find().sort({ createdAt: -1 }).limit(5).lean();
 
   res.json({
     totals: {

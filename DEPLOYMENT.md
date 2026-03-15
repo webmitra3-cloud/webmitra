@@ -13,31 +13,31 @@ This project deploys as one Next.js application (`web`) containing:
 
 - One deployment unit on Vercel
 - MongoDB on Atlas
-- Media on Cloudinary (recommended for production)
+- Media on Cloudinary (required for image uploads)
 
 ## 1. GitHub
 
-Code is already pushed to:
+Code is pushed to:
 - `https://github.com/webmitra3-cloud/webmitra.git`
 
 ## 2. Create Vercel Project
 
-1. Sign in to Vercel
-2. Import GitHub repo: `webmitra3-cloud/webmitra`
+1. Sign in to Vercel.
+2. Import GitHub repo `webmitra3-cloud/webmitra`.
 3. In project settings:
-   - **Root Directory**: `web`
-   - Framework: Next.js (auto)
-   - Install Command: `npm install`
-   - Build Command: `npm run build`
+- Root Directory: `web`
+- Framework: Next.js (auto-detected)
+- Install Command: `npm install`
+- Build Command: `npm run build`
 
 ## 3. Production Environment Variables (Vercel)
 
-Set these in Vercel Project -> Settings -> Environment Variables:
+Set these in Project Settings -> Environment Variables:
 
 - `NODE_ENV=production`
-- `MONGO_URI=...` (MongoDB Atlas connection string)
+- `MONGO_URI=...` (MongoDB Atlas URI)
 - `CLIENT_ORIGIN=https://your-domain.com,https://*.vercel.app`
-- `COOKIE_DOMAIN=` (leave empty unless using subdomains)
+- `COOKIE_DOMAIN=` (empty unless using subdomains)
 - `JWT_ACCESS_SECRET=...`
 - `JWT_REFRESH_SECRET=...`
 - `JWT_ACCESS_EXPIRES_IN=15m`
@@ -55,31 +55,29 @@ Set these in Vercel Project -> Settings -> Environment Variables:
 - `CLOUDINARY_CLOUD_NAME=...`
 - `CLOUDINARY_API_KEY=...`
 - `CLOUDINARY_API_SECRET=...`
-- `LOCAL_UPLOAD_BASE_URL=https://your-domain.com/uploads`
 - `WHATSAPP_NUMBER=9779869672736`
-- `NEXT_PUBLIC_API_URL=` (leave empty for same-origin `/api`)
 - `NEXT_PUBLIC_WHATSAPP_NUMBER=9779869672736`
 
 ## 4. Domain + SSL
 
-1. Add custom domain in Vercel (`your-domain.com`)
-2. Point DNS records to Vercel
-3. SSL is automatic (Let’s Encrypt)
+1. Add your custom domain in Vercel.
+2. Point DNS records to Vercel.
+3. SSL is automatic (Let's Encrypt).
 
 ## 5. Post-Deploy Checks
 
 Validate:
 - `/healthz` returns `{ ok: true }`
-- public pages load
-- admin login works
-- settings update works
-- image upload works (Cloudinary)
-- contact form + testimonials work
+- Public pages load
+- Admin login works
+- Settings update works
+- Image upload works (Cloudinary URL saved)
+- Contact form and testimonials work
 
 ## 6. Best Practices
 
-- Keep `NEXT_PUBLIC_API_URL` empty in single-app mode to avoid CORS complexity.
-- Use Cloudinary in production; do not rely on local uploads for persistence.
+- Use same-origin API calls (`/api/*`) for lowest latency and no CORS complexity.
+- Keep all secrets only in Vercel environment variables.
 - Rotate JWT secrets periodically.
-- Keep MongoDB IP/network access secured.
-- Use Vercel preview deployments for testing before promoting to production.
+- Restrict MongoDB Atlas network access.
+- Use Vercel preview deployments before promoting to production.

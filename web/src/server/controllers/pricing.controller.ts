@@ -16,7 +16,7 @@ export const listPricingPlans = asyncHandler(async (req: Request, res: Response)
     defaultSort: { order: 1, createdAt: -1 },
   });
   const [items, total] = await Promise.all([
-    PricingPlanModel.find(filter).sort(sort).skip(skip).limit(limit),
+    PricingPlanModel.find(filter).sort(sort).skip(skip).limit(limit).lean(),
     PricingPlanModel.countDocuments(filter),
   ]);
   res.json({

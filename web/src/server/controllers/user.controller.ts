@@ -12,7 +12,7 @@ export const listUsers = asyncHandler(async (req: Request, res: Response) => {
   });
 
   const [items, total] = await Promise.all([
-    UserModel.find(filter).sort(sort).skip(skip).limit(limit),
+    UserModel.find(filter).sort(sort).skip(skip).limit(limit).lean(),
     UserModel.countDocuments(filter),
   ]);
 

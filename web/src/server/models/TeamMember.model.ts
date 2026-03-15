@@ -24,5 +24,7 @@ const teamMemberSchema = new Schema(
   { timestamps: true },
 );
 
+teamMemberSchema.index({ type: 1, order: 1, createdAt: -1 });
+
 export type TeamMemberDocument = InferSchemaType<typeof teamMemberSchema>;
 export const TeamMemberModel: Model<TeamMemberDocument> = model<TeamMemberDocument>("TeamMember", teamMemberSchema);

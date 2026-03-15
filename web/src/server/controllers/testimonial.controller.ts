@@ -55,7 +55,7 @@ export const listTestimonials = asyncHandler(async (req: Request, res: Response)
     defaultSort: { order: 1, createdAt: -1 },
   });
   const [items, total] = await Promise.all([
-    TestimonialModel.find(filter).sort(sort).skip(skip).limit(limit),
+    TestimonialModel.find(filter).sort(sort).skip(skip).limit(limit).lean(),
     TestimonialModel.countDocuments(filter),
   ]);
   res.json({

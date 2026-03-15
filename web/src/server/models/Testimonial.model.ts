@@ -24,5 +24,8 @@ const testimonialSchema = new Schema(
   { timestamps: true },
 );
 
+testimonialSchema.index({ visible: 1, order: 1, createdAt: -1 });
+testimonialSchema.index({ order: 1, createdAt: -1 });
+
 export type TestimonialDocument = InferSchemaType<typeof testimonialSchema>;
 export const TestimonialModel: Model<TestimonialDocument> = model<TestimonialDocument>("Testimonial", testimonialSchema);

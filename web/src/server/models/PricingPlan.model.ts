@@ -22,5 +22,7 @@ const pricingPlanSchema = new Schema(
   { timestamps: true },
 );
 
+pricingPlanSchema.index({ order: 1, createdAt: -1 });
+
 export type PricingPlanDocument = InferSchemaType<typeof pricingPlanSchema>;
 export const PricingPlanModel: Model<PricingPlanDocument> = model<PricingPlanDocument>("PricingPlan", pricingPlanSchema);

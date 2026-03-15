@@ -16,7 +16,7 @@ export const listCollaborations = asyncHandler(async (req: Request, res: Respons
     defaultSort: { order: 1, createdAt: -1 },
   });
   const [items, total] = await Promise.all([
-    CollaborationModel.find(filter).sort(sort).skip(skip).limit(limit),
+    CollaborationModel.find(filter).sort(sort).skip(skip).limit(limit).lean(),
     CollaborationModel.countDocuments(filter),
   ]);
   res.json({

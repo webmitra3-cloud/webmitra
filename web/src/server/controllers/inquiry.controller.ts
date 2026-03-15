@@ -14,7 +14,7 @@ export const listInquiries = asyncHandler(async (req: Request, res: Response) =>
   if (status) filter.status = status;
 
   const [items, total] = await Promise.all([
-    InquiryModel.find(filter).sort(sort).skip(skip).limit(limit),
+    InquiryModel.find(filter).sort(sort).skip(skip).limit(limit).lean(),
     InquiryModel.countDocuments(filter),
   ]);
 

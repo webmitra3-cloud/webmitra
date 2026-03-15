@@ -67,7 +67,7 @@ export const listProjects = asyncHandler(async (req: Request, res: Response) => 
     defaultSort: { featured: -1, createdAt: -1 },
   });
   const [items, total] = await Promise.all([
-    ProjectModel.find(filter).sort(sort).skip(skip).limit(limit),
+    ProjectModel.find(filter).sort(sort).skip(skip).limit(limit).lean(),
     ProjectModel.countDocuments(filter),
   ]);
   res.json({

@@ -30,5 +30,8 @@ const projectSchema = new Schema(
   { timestamps: true },
 );
 
+projectSchema.index({ featured: -1, createdAt: -1 });
+projectSchema.index({ order: 1, createdAt: -1 });
+
 export type ProjectDocument = InferSchemaType<typeof projectSchema>;
 export const ProjectModel: Model<ProjectDocument> = model<ProjectDocument>("Project", projectSchema);

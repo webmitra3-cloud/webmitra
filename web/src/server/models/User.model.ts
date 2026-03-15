@@ -17,6 +17,8 @@ const userSchema = new Schema(
   { timestamps: true },
 );
 
+userSchema.index({ createdAt: -1 });
+
 userSchema.set("toJSON", {
   transform: (_doc, ret: Record<string, unknown>) => {
     delete ret.passwordHash;
